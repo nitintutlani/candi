@@ -87,9 +87,9 @@ export module candi {
          * @param name is name of injected definition
          * @param value is the definition value itself
          */
-        public inject(type: InjectionTypes, name: string, value: any) {
+        public inject = function(type: InjectionTypes, name: string, value: any) {
 
-            if( arguments.length != 2 || arguments.length != 3 ) {
+            if( arguments.length != 3 ) {
                 throw new Error( ErrorNames.InvalidArguments.toString() );
             }
 
@@ -106,7 +106,7 @@ export module candi {
             }
         }
 
-        private injectValue(name: string, value: {}): void {
+        private injectValue = function(name: string, value: any): void {
             //reject if param obj is anther function
             if( typeof(value) === 'function' ) {
                 throw new Error( ErrorNames.FunctionFound.toString() );
@@ -124,7 +124,7 @@ export module candi {
                 configurable : true});
         }
 
-        private injectConstant(name: string, value: {}): void {
+        private injectConstant = function(name: string, value: any): void {
             //reject if param obj is anther function
             if( typeof(value) === 'function' ) {
                 throw new Error( ErrorNames.FunctionFound.toString() );
@@ -146,7 +146,7 @@ export module candi {
          * @param name
          * @returns {boolean}
          */
-        public hasInject(name: string) : boolean {
+        public hasInject = function(name: string) : boolean {
             return (this._definitions[name] != undefined)? true : false;
         }
 
@@ -156,7 +156,7 @@ export module candi {
          * @param injectionName
          * @returns {boolean}
          */
-        public deleteInject(name: string): void {
+        public deleteInject = function(name: string): void {
             delete this._definitions[name];
         }
 
