@@ -9,7 +9,8 @@
     },
     "main": "lib/candi.js",
     "directories": {
-        "lib": "./lib"
+        "lib": "./lib",
+        "test": "./test"
     },
     "engines": {
         "node": ">=0.8"
@@ -19,6 +20,6 @@
         "should": "latest"
     },
     "scripts": {
-        "test": "node_modules/.bin/mocha -w"
+        "test": "node_modules/.bin/mocha"
     }
 }
