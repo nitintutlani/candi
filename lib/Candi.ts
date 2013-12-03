@@ -18,22 +18,6 @@
 
 export module Candi {
 
-    //I am looking for a stable alternative
-    //This can handle all function calls returning primitive or object types
-    //Apply any number of arguments on the fly
-    var __construct: any = function(fn, args): any {
-        args = args || [];
-        var result: any;
-        result = fn.apply(fn, args);
-        if( typeof(result) === 'object' || result === undefined ) {
-            if( args.length==0 || args[0]!==null ) {
-                args.unshift(null);
-            }
-            result = new (fn.bind.apply(fn, args ))();
-        }
-        return result;
-    }
-
     /**
      * Enumerating allowed Injection type names
      * Allowed string values: value,constant, provider, factory, service
@@ -144,6 +128,8 @@ export module Candi {
          * @param name is name of injection
          * @param value is the injection itself
          * @returns this
+         *
+         * @todo Make value optional at the time of injection
          */
         public inject = function(type: InjectionTypes, name: string, value: any, depends?: string): Container {
             if( arguments.length != 3 && arguments.length != 4 ) {
@@ -173,6 +159,20 @@ export module Candi {
                     break;
             }
             return this;
+        }
+
+        /**
+         * ReInject to the container
+         * Supports chaning, Container.inject().hasInjection().reinject()
+         * Quick work around for deleteInjection().inject()
+         *
+         * @param type is Type of injection check InjectionTypes for allowed types
+         * @param name is name of injection
+         * @param value is the injection itself
+         * @returns this
+         */
+        public reinject = function(type: InjectionTypes, name: string, value: any, depends?: string): Container {
+            return this.deleteInjection(name).inject(type, name, value, depends);
         }
 
         private injectValue = function(name: string, value: any): void {
@@ -244,7 +244,7 @@ export module Candi {
                     var fn: any, args: any[];
                     fn = this._injections[name].value;
                     args = this._resolveDependencies(this._injections[name].depends);
-                    this._injections[name]._cache = __construct(fn, args);
+                    this._injections[name]._cache = this.__construct(fn, args);
                     return this._injections[name]._cache;
                 },
                 set : function(newValue){
@@ -267,7 +267,7 @@ export module Candi {
                     fn = this._injections[name].value;
                     args = this._resolveDependencies(this._injections[name].depends);
                     if(this._injections[name]._cache === undefined) {
-                        this._injections[name]._cache = __construct(fn, args);
+                        this._injections[name]._cache = this.__construct(fn, args);
                     }
                     return this._injections[name]._cache;
                 },
@@ -305,6 +305,23 @@ export module Candi {
                 }
             }
             return dependencies;
+        }
+
+        //I am looking for a stable alternative
+        //This can handle all function calls returning primitive or object types
+        //Apply any number of arguments on the fly
+        public __construct = function(fn, args): any {
+            args = args || [];
+            var result: any;
+            result = fn.apply(fn, args);
+            if( typeof(result) === 'object' || result === undefined ) {
+                if( args.length==0 || args[0]!==null ) {
+                    //insert null as first item to the array of arguments
+                    args.unshift(null);
+                }
+                result = new (fn.bind.apply(fn, args ))();
+            }
+            return result;
         }
 
     }
