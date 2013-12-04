@@ -3,26 +3,26 @@
  */
 
 /**
- * Candi
+ * candi
  *
  * Dependency injection library written in typescript for node.js
  *
- * Creators of Pimple, Rewire and AngularJS have done tremendous job implementing Dependency Injection techniques
+ * Creators of Pimple, Rewire and AngularJS have done tremendous job implementing Dependency injection techniques
  * I am thankful to their respective authors for sharing knowledge and work with the community
  *
  * My intended purpose of writing this library is to build a lifecycle based Application container
  *
- * @package Candi
+ * @package candi
  * @author  Nitin Tutlani
  */
 
-export module Candi {
+export module candi {
 
     /**
-     * Enumerating allowed Injection type names
+     * Enumerating allowed injection type names
      * Allowed string values: value,constant, provider, factory, service
      */
-    export enum InjectionTypes {
+    export enum injectionTypes {
         value = <any>'value',
         constant = <any>'constant',
         provider = <any>'provider',
@@ -33,24 +33,24 @@ export module Candi {
     /**
      * Enumerating thrown error names, for Translation
      */
-    export enum ErrorNames {
-        FunctionFound = <any>'FunctionFound',
-        FunctionNotFound = <any>'FunctionNotFound',
-        UnknownInjectionType = <any>'UnknownInjectionType',
-        InvalidArguments = <any>'InvalidArguments',
-        InjectionExists = <any>'InjectionExists',
-        ReInjectionRequired = <any>'ReInjectionRequired',
-        UnknownDependency = <any>'UnknownDependency'
+    export enum errorNames {
+        FunctionFoundError = <any>'FunctionFoundError',
+        FunctionNotFoundError = <any>'FunctionNotFoundError',
+        UnknowninjectionTypeError = <any>'UnknowninjectionTypeError',
+        InvalidArgumentsError = <any>'InvalidArgumentsError',
+        injectionExistsError = <any>'injectionExistsError',
+        ReinjectionRequiredError = <any>'ReinjectionRequiredError',
+        UnknownDependencyError = <any>'UnknownDependencyError'
     }
 
-    export class Injection {
-        public type: InjectionTypes;
+    export class injection {
+        public type: injectionTypes;
         public name: string;
         public depends: string;
         public value: any;
         public _cache: any;
 
-        constructor(type: InjectionTypes, name: string, value: any, depends?: string) {
+        constructor(type: injectionTypes, name: string, value: any, depends?: string) {
             this.type = type;
             this.name = name;
             this.value = value;
@@ -60,29 +60,29 @@ export module Candi {
     }
 
     /**
-     * Candi - Container class
+     * candi - container class
      *
-     * Injection (contextual) - the injected parameter, value, object or function kept in container for later use
-     * Injection Types
+     * injection (contextual) - the injected parameter, value, object or function kept in container for later use
+     * injection Types
      *  - value (get/set object)
      *  - constant (get(only) object)
      *  - provider (get/set function)
      *  - factory (new function())
      *  - service (cache obj || new function())
-     * In case of function type injections Candi can automatically pass previously injected injections as arguments to their constructor.
-     * Dependency Injection use case is most important for factory (execute every time) and service (execute first time) injections as they accept functions and return object obtained from constructors based on dependencies.
+     * In case of function type injections candi can automatically pass previously injected injections as arguments to their constructor.
+     * Dependency injection use case is most important for factory (execute every time) and service (execute first time) injections as they accept functions and return object obtained from constructors based on dependencies.
      *
      */
-    export class Container {
+    export class container {
 
-        //parent of this Container
+        //parent of this container
         public __proto__: {};
-        public _injections: Injection[];
+        public _injections: injection[];
 
         /**
-         * Constructor of Container
+         * Constructor of container
          *
-         * @param parent is Parent to this container, Candi will use it as prototype to the container object
+         * @param parent is Parent to this container, candi will use it as prototype to the container object
          */
         constructor(parent: Object) {
             // use obj param as prototype object to this container
@@ -92,7 +92,7 @@ export module Candi {
 
             //reject if param obj is anther function
             if( typeof(parent) === 'function' ) {
-                throw new Error( ErrorNames.FunctionFound.toString() );
+                throw new Error( errorNames.FunctionFoundError.toString() );
             }
 
         }
@@ -110,52 +110,52 @@ export module Candi {
 
         /**
          * Deletes previous injection
-         * Supports chaning, Container.inject().hasInjection().inject()
+         * Supports chaning, container.inject().hasInjection().inject()
          *
          * @param name
          * @returns this
          */
-        public deleteInjection = function(name: string): Container {
+        public deleteInjection = function(name: string): container {
             delete this._injections[name];
             return this;
-        }
+        } 
 
         /**
          * Inject to the container
-         * Supports chaning, Container.inject().hasInjection().inject()
+         * Supports chaning, container.inject().hasInjection().inject()
          *
-         * @param type is Type of injection check InjectionTypes for allowed types
+         * @param type is Type of injection check injectionTypes for allowed types
          * @param name is name of injection
          * @param value is the injection itself
          * @returns this
          *
          * @todo Make value optional at the time of injection
          */
-        public inject = function(type: InjectionTypes, name: string, value: any, depends?: string): Container {
+        public inject = function(type: injectionTypes, name: string, value: any, depends?: string): container {
             if( arguments.length != 3 && arguments.length != 4 ) {
-                throw new Error( ErrorNames.InvalidArguments.toString() );
+                throw new Error( errorNames.InvalidArgumentsError.toString() );
             }
             if( this.hasInjection(name) ) {
-                throw new Error( ErrorNames.InjectionExists.toString() );
+                throw new Error( errorNames.injectionExistsError.toString() );
             }
             switch( type ) {
-                case InjectionTypes.value:
+                case injectionTypes.value:
                     this.injectValue(name, value);
                     break;
-                case InjectionTypes.constant:
+                case injectionTypes.constant:
                     this.injectConstant(name, value);
                     break;
-                case InjectionTypes.provider:
+                case injectionTypes.provider:
                     this.injectProvider(name, value);
                     break;
-                case InjectionTypes.factory:
+                case injectionTypes.factory:
                     this.injectFactory(name, value, depends);
                     break;
-                case InjectionTypes.service:
+                case injectionTypes.service:
                     this.injectService(name, value, depends);
                     break;
                 default:
-                    throw new Error( ErrorNames.UnknownInjectionType.toString() );
+                    throw new Error( errorNames.UnknowninjectionTypeError.toString() );
                     break;
             }
             return this;
@@ -163,15 +163,15 @@ export module Candi {
 
         /**
          * ReInject to the container
-         * Supports chaning, Container.inject().hasInjection().reinject()
+         * Supports chaning, container.inject().hasInjection().reinject()
          * Quick work around for deleteInjection().inject()
          *
-         * @param type is Type of injection check InjectionTypes for allowed types
+         * @param type is Type of injection check injectionTypes for allowed types
          * @param name is name of injection
          * @param value is the injection itself
          * @returns this
          */
-        public reinject = function(type: InjectionTypes, name: string, value: any, depends?: string): Container {
+        public reinject = function(type: injectionTypes, name: string, value: any, depends?: string): container {
             return this.deleteInjection(name).inject(type, name, value, depends);
         }
 
@@ -183,18 +183,18 @@ export module Candi {
                 set : function(newValue){
                     //reject if function is being injected
                     if( typeof(newValue) === 'function' ) {
-                        throw new Error( ErrorNames.FunctionFound.toString() );
+                        throw new Error( errorNames.FunctionFoundError.toString() );
                     }
-                    this._injections[name] = new Injection(InjectionTypes.value, name, newValue);
+                    this._injections[name] = new injection(injectionTypes.value, name, newValue);
                 },
                 writeable: true,
                 enumerable : true,
                 configurable : true});
             //reject if function is being injected
             if( typeof(value) === 'function' ) {
-                throw new Error( ErrorNames.FunctionFound.toString() );
+                throw new Error( errorNames.FunctionFoundError.toString() );
             }
-            this._injections[name] = new Injection(InjectionTypes.value, name, value);
+            this._injections[name] = new injection(injectionTypes.value, name, value);
         }
 
         private injectConstant = function(name: string, value: any): void {
@@ -203,7 +203,7 @@ export module Candi {
                     return this._injections[name].value;
                 },
                 set : function(newValue){
-                    throw new Error( ErrorNames.ReInjectionRequired.toString() );
+                    throw new Error( errorNames.ReinjectionRequiredError.toString() );
                 },
                 writeable: false,
                 enumerable : true,
@@ -211,9 +211,9 @@ export module Candi {
 
             //reject if param obj is anther function
             if( typeof(value) === 'function' ) {
-                throw new Error( ErrorNames.FunctionFound.toString() );
+                throw new Error( errorNames.FunctionFoundError.toString() );
             }
-            this._injections[name] = new Injection(InjectionTypes.constant, name, value);
+            this._injections[name] = new injection(injectionTypes.constant, name, value);
         }
 
         private injectProvider = function(name: string, value: any): void {
@@ -224,18 +224,18 @@ export module Candi {
                 set : function(newValue){
                     //reject if non-function is being injected
                     if( typeof(newValue) !== 'function' ) {
-                        throw new Error( ErrorNames.FunctionNotFound.toString() );
+                        throw new Error( errorNames.FunctionNotFoundError.toString() );
                     }
-                    this._injections[name] = new Injection(InjectionTypes.value, name, newValue);
+                    this._injections[name] = new injection(injectionTypes.value, name, newValue);
                 },
                 writeable: true,
                 enumerable : true,
                 configurable : true});
             //reject if non-function is being injected
             if( typeof(value) !== 'function' ) {
-                throw new Error( ErrorNames.FunctionNotFound.toString() );
+                throw new Error( errorNames.FunctionNotFoundError.toString() );
             }
-            this._injections[name] = new Injection(InjectionTypes.provider, name, value);
+            this._injections[name] = new injection(injectionTypes.provider, name, value);
         }
 
         private injectFactory = function(name: string, value: any, depends: string): void {
@@ -248,16 +248,16 @@ export module Candi {
                     return this._injections[name]._cache;
                 },
                 set : function(newValue){
-                    throw new Error( ErrorNames.ReInjectionRequired.toString() );
+                    throw new Error( errorNames.ReinjectionRequiredError.toString() );
                 },
                 writeable: true,
                 enumerable : true,
                 configurable : true});
             //reject if non-function is being injected
             if( typeof(value) !== 'function' ) {
-                throw new Error( ErrorNames.FunctionNotFound.toString() );
+                throw new Error( errorNames.FunctionNotFoundError.toString() );
             }
-            this._injections[name] = new Injection(InjectionTypes.provider, name, value, depends);
+            this._injections[name] = new injection(injectionTypes.provider, name, value, depends);
         }
 
         private injectService = function(name: string, value: any, depends: string): void {
@@ -272,25 +272,25 @@ export module Candi {
                     return this._injections[name]._cache;
                 },
                 set : function(newValue){
-                    throw new Error( ErrorNames.ReInjectionRequired.toString() );
+                    throw new Error( errorNames.ReinjectionRequiredError.toString() );
                 },
                 writeable: false,
                 enumerable : true,
                 configurable : true});
             //reject if non-function is being injected
             if( typeof(value) !== 'function' ) {
-                throw new Error( ErrorNames.FunctionNotFound.toString() );
+                throw new Error( errorNames.FunctionNotFoundError.toString() );
             }
-            this._injections[name] = new Injection(InjectionTypes.provider, name, value, depends);
+            this._injections[name] = new injection(injectionTypes.provider, name, value, depends);
         }
 
         //Clear service cache
-        public resetService = function(name: string): Container {
+        public resetService = function(name: string): container {
             delete this._injections[name]._cache;
             return this;
         }
 
-        //Container specific function accepts a string of space delimited dependencies, resolve them and returns them as an Array
+        //container specific function accepts a string of space delimited dependencies, resolve them and returns them as an Array
         //Its like a getter map
         public _resolveDependencies = function(depends: string): any[] {
             if(typeof(depends)!=='string') return [];
@@ -301,7 +301,7 @@ export module Candi {
                 if( this.hasInjection( dependencyNames[i] ) ) {
                     dependencies.push( this[dependencyNames[i]] );
                 } else {
-                    throw new Error( ErrorNames.UnknownDependency.toString() );
+                    throw new Error( errorNames.UnknownDependencyError.toString() );
                 }
             }
             return dependencies;
@@ -327,4 +327,4 @@ export module Candi {
     }
 }
 var module = module || {};
-module.exports = Candi;
+module.exports = candi;

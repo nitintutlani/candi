@@ -1,77 +1,77 @@
 /**
  * Copyright (c) Nitin Tutlani <nitintutlani@yahoo.com>
  */
-var Candi = require('../lib/Candi');
+var candi = require('../lib/candi');
 var should = require('chai').should();
 
-//Testing of Errors thrown by Candi Container
+//Testing of Errors thrown by Candi container
 describe("Errors", function() {
-    var Container = new Candi.Container();
+    var container = new candi.container();
 
-    describe('FunctionFound', function() {
+    describe('FunctionFoundError', function() {
         it('Inject function as value', function() {
             (function() {
-                Container.inject('value', 'foo', function() {
+                container.inject('value', 'foo', function() {
                     return true;
                 });
             }).should.throw();
         });
     });
 
-    describe('FunctionNotFound', function() {
+    describe('FunctionNotFoundError', function() {
         it('Inject object as provider', function() {
             (function() {
-                Container.inject('provider', 'foo', 5);
+                container.inject('provider', 'foo', 5);
             }).should.throw();
         });
     });
 
-    describe('UnknownInjectionType', function() {
+    describe('UnknownInjectionTypeError', function() {
         it('Inject foo type', function() {
             (function() {
-                Container.inject('foo', 'bar', 'test');
+                container.inject('foo', 'bar', 'test');
             }).should.throw();
         });
     });
 
-    describe('InvalidArguments', function() {
+    describe('InvalidArgumentsError', function() {
         it('Inject too few arguments', function() {
             (function() {
-                Container.inject('value', 'foo');
+                container.inject('value', 'foo');
             }).should.throw();
         });
         it('Inject too many arguments', function() {
             (function() {
-                Container.inject('value', 'foo', 3, 4, 5);
+                container.inject('value', 'foo', 3, 4, 5);
             }).should.throw();
         });
     });
 
-    describe('InjectionExists', function() {
+    describe('InjectionExistsError', function() {
         it('Inject value twice again', function() {
             (function() {
-                Container.reinject('value', 'score', 99);
-                Container.inject('value', 'score', 99);
+                container.reinject('value', 'score', 99);
+                container.inject('value', 'score', 99);
             }).should.throw();
         });
     });
 
-    Container.reinject('constant', 'PI',3.14);
-    describe('ReInjectionRequired', function() {
+    container.reinject('constant', 'PI',3.14);
+    describe('ReInjectionRequiredError', function() {
         it('Constant PI cannot be changed', function() {
             (function() {
-                Container.PI = 10;
+                container.PI = 10;
             }).should.throw();
         });
     });
 
-    Container.reinject('factory', 'Circumference', function(PI, radius) {
+    container.reinject('factory', 'Circumference', function(PI, radius) {
         return 2 * PI * radius;
     }, 'PIFI');
-    describe('ReInjectionRequired', function() {
+    describe('ReInjectionRequiredError', function() {
         it('Injection PI renamed to non-existant PIFI', function() {
             (function() {
-                return Container.Circumference;
+                return container.Circumference;
             }).should.throw();
         });
     });
