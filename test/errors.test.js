@@ -37,7 +37,7 @@ describe("Errors", function() {
     describe('InvalidArgumentsError', function() {
         it('Inject too few arguments', function() {
             (function() {
-                container.inject('value', 'foo');
+                container.inject('value');
             }).should.throw();
         });
         it('Inject too many arguments', function() {

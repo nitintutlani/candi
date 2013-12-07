@@ -84,7 +84,7 @@ module candi {
          *
          * @param parent is Parent to this container, candi will use it as prototype to the container object
          */
-        constructor(parent: Object) {
+        constructor(parent?: Object) {
             // use obj param as prototype object to this container
             if(parent) this.__proto__ = parent;
 
@@ -131,13 +131,15 @@ module candi {
          *
          * @todo Make value optional at the time of injection
          */
-        public inject = function(type: injectionTypes, name: string, value: any, depends?: string): container {
-            if( arguments.length != 3 && arguments.length != 4 ) {
+        public inject = function(type: injectionTypes, name: string, value?: any, depends?: string): container {
+            if( arguments.length < 2 || arguments.length > 4 ) {
                 throw new Error( errorNames.InvalidArgumentsError.toString() );
             }
             if( this.hasInjection(name) ) {
                 throw new Error( errorNames.injectionExistsError.toString() );
             }
+            value = value || null;
+            depends = depends || null;
             switch( type ) {
                 case injectionTypes.value:
                     this.injectValue(name, value);
