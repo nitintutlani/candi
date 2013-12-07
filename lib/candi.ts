@@ -16,7 +16,7 @@
  * @author  Nitin Tutlani
  */
 
-export module candi {
+module candi {
 
     /**
      * Enumerating allowed injection type names
@@ -326,5 +326,5 @@ export module candi {
 
     }
 }
-var module = module || {};
-module.exports = candi;
+
+export = candi;
