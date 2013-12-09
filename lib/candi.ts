@@ -20,14 +20,15 @@ module candi {
 
     /**
      * Enumerating allowed injection type names
-     * Allowed string values: value,constant, provider, factory, service
+     * Allowed string values: value,constant, provider, factory, service, link
      */
     export enum injectionTypes {
         value = <any>'value',
         constant = <any>'constant',
         provider = <any>'provider',
         factory = <any>'factory',
-        service = <any>'service'
+        service = <any>'service',
+        link = <any>'link'
     }
 
     /**
@@ -69,8 +70,10 @@ module candi {
      *  - provider (get/set function)
      *  - factory (new function())
      *  - service (cache obj || new function())
+     *  - link (reference to another container injection or object property)
      * In case of function type injections candi can automatically pass previously injected injections as arguments to their constructor.
      * Dependency injection use case is most important for factory (execute every time) and service (execute first time) injections as they accept functions and return object obtained from constructors based on dependencies.
+     * `link` type injection for linking to another container's injections or another object properties.
      *
      */
     export class container {
@@ -129,7 +132,6 @@ module candi {
          * @param value is the injection itself
          * @returns this
          *
-         * @todo Make value optional at the time of injection
          */
         public inject = function(type: injectionTypes, name: string, value?: any, depends?: string): container {
             if( arguments.length < 2 || arguments.length > 4 ) {
@@ -155,6 +157,9 @@ module candi {
                     break;
                 case injectionTypes.service:
                     this.injectService(name, value, depends);
+                    break;
+                case injectionTypes.link:
+                    this.injectLink(name, value);
                     break;
                 default:
                     throw new Error( errorNames.UnknowninjectionTypeError.toString() );
@@ -228,7 +233,7 @@ module candi {
                     if( typeof(newValue) !== 'function' ) {
                         throw new Error( errorNames.FunctionNotFoundError.toString() );
                     }
-                    this._injections[name] = new injection(injectionTypes.value, name, newValue);
+                    this._injections[name] = new injection(injectionTypes.provider, name, newValue);
                 },
                 writeable: true,
                 enumerable : true,
@@ -259,7 +264,7 @@ module candi {
             if( typeof(value) !== 'function' ) {
                 throw new Error( errorNames.FunctionNotFoundError.toString() );
             }
-            this._injections[name] = new injection(injectionTypes.provider, name, value, depends);
+            this._injections[name] = new injection(injectionTypes.factory, name, value, depends);
         }
 
         private injectService = function(name: string, value: any, depends: string): void {
@@ -283,7 +288,25 @@ module candi {
             if( typeof(value) !== 'function' ) {
                 throw new Error( errorNames.FunctionNotFoundError.toString() );
             }
-            this._injections[name] = new injection(injectionTypes.provider, name, value, depends);
+            this._injections[name] = new injection(injectionTypes.service, name, value, depends);
+        }
+
+        private injectLink = function(name: string, value: any): void {
+            Object.defineProperty(this, name, {
+                get : function(){
+                    return this._injections[name].value[name];
+                },
+                set : function(newValue){
+                    throw new Error( errorNames.ReinjectionRequiredError.toString() );
+                },
+                writeable: false,
+                enumerable : true,
+                configurable : true});
+            //reject if function is being linked to this injection
+            if( typeof(value) === 'function' ) {
+                throw new Error( errorNames.FunctionFoundError.toString() );
+            }
+            this._injections[name] = new injection(injectionTypes.link, name, value);
         }
 
         //Clear service cache
