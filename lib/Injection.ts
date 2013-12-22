@@ -12,7 +12,7 @@ class Injection {
     public type: string;
     public name: string;
     public value: any;
-    public _cache: any;
+    public cache: any;
 
     constructor(type: string, name: string, value: any) {
         this.type = type;

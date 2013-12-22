@@ -1,19 +1,16 @@
 {
     "author": "Nitin Tutlani <nitintutlani@yahoo.com>",
     "name": "candi",
-    "version": "0.1.3",
-    "description": "Dependency injection library written in typescript for node.js",
+    "version": "0.2.0",
+    "description": "Dependency injection and utility library for node.js",
     "repository": {
         "type": "git",
         "url": "git://github.com/coldesk/candi.git"
     },
-    "main": "lib/candi.js",
-    "directories": {
-        "lib": "./lib",
-        "test": "./test"
-    },
+    "main": "lib/candi",
     "engines": {
-        "node": ">=0.8"
+        "node": ">=0.8",
+        "lodash": "*"
     },
     "devDependencies": {
         "mocha": "*",

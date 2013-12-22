@@ -10,18 +10,18 @@ var myError = CandiError.Custom('my_package_name');
 describe("candi.Error", function () {
     it('Template', function () {
         try  {
-            throw new CandiError.Template('my_package_name', 'my_code_area_name', 'This error message supports tags like {0}, {1}', [100, 'foo']);
+            throw new CandiError.Template('my_package_name', 'my_code_area_name', 'myError', 'This error message supports tags like {0}, {1}', [100, 'foo']);
         } catch (e) {
-            e.name.should.be.equal('my_package_name:my_code_area_name');
+            e.name.should.be.equal('myError');
             e.message.should.be.equal('[my_package_name:my_code_area_name] This error message supports tags like 100, foo');
         }
     });
 
     it('Custom', function () {
         try  {
-            throw myError('my_code_area_name', 'This error message supports tags like {0}, {1}', 100, 'bar');
+            throw myError('my_code_area_name', 'myError', 'This error message supports tags like {0}, {1}', 100, 'bar');
         } catch (e) {
-            e.name.should.be.equal('my_package_name:my_code_area_name');
+            e.name.should.be.equal('myError');
             e.message.should.be.equal('[my_package_name:my_code_area_name] This error message supports tags like 100, bar');
         }
     });

@@ -16,15 +16,15 @@ var ErrorClass = Error;
  * Template class for Error
  *
  * Usage:
- *     throw new Template('my_package_name', 'my_code_area_name', 'This error message supports tags like {0}, {1}', [100, 'foo']);
+ *     throw new Template('my_package_name', 'my_code_area_name', 'myError', 'This error message supports tags like {0}, {1}', [100, 'foo']);
  */
 export class Template extends ErrorClass {
     public name: string;
     public message: string;
 
-    constructor(package: string, code: string, template: string, options: Array) {
-        this.name = package ? package + ':' + code : code;
-        this.message = '[' + this.name + '] ' + template.replace(/\{\d+\}/g, function (match) {
+    constructor(package: string, code: string, name: string, template: string, options: Array) {
+        this.name = name;
+        this.message = '[' + (package ? package + ':' + code : code) + '] ' + template.replace(/\{\d+\}/g, function (match) {
             var index = +match.slice(1, -1), arg;
             if (index < options.length) {
                 arg = Template.stringify(options[index]);
@@ -53,12 +53,12 @@ export class Template extends ErrorClass {
  *
  * Usage
  *     var myError = new Custom('my_package_name');
- *     throw myError('my_code_area_name', 'This error message supports tags like {0}, {1}', 100, 'foo');
+ *     throw myError('my_code_area_name', 'myError', 'This error message supports tags like {0}, {1}', 100, 'foo');
  *
  * PS: The tag parameters are passed as arguments. This usage is different from Template class
  */
-export function Custom(package: string) {
-    return function (code: string, template: string, ...options: Array): Template {
-        return new Template(package, code, template, options);
+export function Custom(package: string): any {
+    return function (code: string, name: string, template: string, ...options: Array): Template {
+        return new Template(package, code, name, template, options);
     };
 }
