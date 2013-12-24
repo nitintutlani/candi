@@ -1,4 +1,4 @@
-Candi
+Candi [![Build Status](https://travis-ci.org/coldesk/candi.png?branch=master)](https://travis-ci.org/coldesk/candi)
 -----
 Dependency injection and utility library for node.js
 
