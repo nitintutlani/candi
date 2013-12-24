@@ -1,13 +1,4 @@
 /**
- * Copyright (c) Nitin Tutlani <nitintutlani@yahoo.com>
- */
-
-import Injection = require('./Injection');
-import CandiError = require('./Error');
-import ContainerErrors = require('./ContainerErrors');
-import Util = require('./Util');
-
-/**
  * Container class
  *
  * injection (contextual) - the injected parameter, value, object or function kept in container for later use
@@ -23,7 +14,7 @@ import Util = require('./Util');
  *
  * Ability to extend or inherit from parent object has been revoked, it added complexity and both going down and upside of Container Provider Bundle Application chain.
  */
-class Container {
+export class Container {
 
     public name: string;
     public _injections: Injection[];
@@ -123,7 +114,7 @@ class Container {
                 break;
             case 'factory':
             case 'service':
-                //use util.annotateFn to filter value into annotated function
+                //use Util.annotateFn to filter value into annotated function
                 value = Util.annotateFn(value);
             case 'provider':
                 if( !Util.isFunction(value) ) {
@@ -272,5 +263,3 @@ class Container {
     }
 
 }
-
-export = Container;

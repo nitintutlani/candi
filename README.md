@@ -16,6 +16,7 @@ Thanks
 ------
 Creators of Pimple, Rewire and AngularJS have done tremendous job implementing Dependency Injection techniques.
 I am thankful to their respective authors for sharing knowledge and work with the community.
+Special thanks to author/s of LeapMotionTS for incredible grunt scripts.
 
 Features
 --------

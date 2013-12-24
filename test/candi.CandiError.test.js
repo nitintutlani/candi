@@ -4,10 +4,11 @@
 
 var should = require('chai').should();
 
-var CandiError = require('../lib/Error');
-var myError = CandiError.Custom('my_package_name');
+var candi = require('../lib/candi');
+var CandiError = candi.CandiError;
+var myError = candi.CandiError.Custom('my_package_name');
 
-describe("candi.Error", function () {
+describe("candi.CandiError", function () {
     it('Template', function () {
         try  {
             throw new CandiError.Template('my_package_name', 'my_code_area_name', 'myError', 'This error message supports tags like {0}, {1}', [100, 'foo']);

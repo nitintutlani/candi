@@ -4,7 +4,8 @@
 
 var should = require('chai').should();
 
-var Util = require('../lib/Util');
+var candi = require('../lib/candi');
+var Util = candi.Util;
 
 function Sum(a,b) {
     return a+b;

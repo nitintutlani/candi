@@ -3,8 +3,8 @@
  */
 
 var should = require('chai').should();
-var Container = require('../lib/Container');
-var container = new Container();
+var candi = require('../lib/candi');
+var container = new candi.Container();
 function Sum(a, b) {
     return a+b;
 }

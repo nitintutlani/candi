@@ -13,8 +13,7 @@ results
 
 npm-debug.log
 node_modules
-references
 
 .idea
+
 *.map
-*.git*

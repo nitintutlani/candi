@@ -14,7 +14,13 @@
     },
     "devDependencies": {
         "mocha": "*",
-        "chai": "*"
+        "chai": "*",
+        "grunt": "*",
+        "grunt-contrib-concat": "*",
+        "grunt-contrib-copy": "*",
+        "grunt-typescript": "*",
+        "grunt-sed": "*",
+        "grunt-mocha-test": "*"
     },
     "scripts": {
         "test": "node_modules/.bin/mocha"

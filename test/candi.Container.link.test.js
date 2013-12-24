@@ -3,14 +3,14 @@
  */
 
 var should = require('chai').should();
-var Container = require('../lib/Container');
-var container = new Container();
-var container2 = new Container();
+var candi = require('../lib/candi');
+var container = new candi.Container();
+var container2 = new candi.Container();
 function Sum(a,b) {
     return a+b;
 }
-function Student(name) {
-    this.name = name;
+function Student(nick) {
+    this.name = nick;
 }
 container.provider('Sum', Sum);
 container.factory('Student', Student);
@@ -38,7 +38,8 @@ describe('Container', function() {
         it('UnknownDependencyError', function(){
             (function(){
                 container2.link('Student', container);
-            }).should.throw('No such injection');
+                var nitin = container2.Student;
+            }).should.throw('dependency cannot be resolved in the Container');
         });
 
     });

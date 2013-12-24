@@ -1,19 +1,20 @@
+declare module _ {
+    interface LoDashStatic {
+        annotateFn(fn: any): any;
+    }
+}
+
+export var Util = require('lodash');
+
 /**
-* Copyright (c) Nitin Tutlani <nitintutlani@yahoo.com>
-*/
-
-
-var Util = require('lodash');
-
-/**
-* Annotates a function with static parameter `injections`
-* injections is a string of comma separated function arguments to protect it from minification
-* annotated function can be used as DI provider and called later by way of Automatic injections
-*
-* @param fn function to annotate, function can also be an Invokable function array [fn: function, injections: string]
-* @returns Annotated function reference is returned
-*/
-Util.annotateFn = function (fn) {
+ * Annotates a function with static parameter `injections`
+ * injections is a string of comma separated function arguments to protect it from minification
+ * annotated function can be used as DI provider and called later by way of Automatic injections
+ *
+ * @param fn function to annotate, function can also be an Invokable function array [fn: function, injections: string]
+ * @returns Annotated function reference is returned
+ */
+Util.annotateFn = function(fn) {
     var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
     var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
 
@@ -42,9 +43,4 @@ Util.annotateFn = function (fn) {
         result = fn;
     }
     return result;
-};
-
-
-module.exports = Util;
-
-//# sourceMappingURL=Util.js.map
+}

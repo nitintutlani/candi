@@ -4,12 +4,12 @@
 
 var should = require('chai').should();
 
-var Container = require('../lib/Container');
+var candi = require('../lib/candi');
+var container = new candi.Container();
+
 function Student(name) {
     this.name = name;
 }
-
-var container = new Container();
 var nitin = new Student('nitin');
 var nitin2 = new Student('nitin2');
 
