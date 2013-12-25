@@ -9,34 +9,38 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         "concat": {
             references: {
-                src: ['lib/<%= pkg.name.toLowerCase() %>.ts', 'src/references.d.ts'],
-                dest: 'lib/<%= pkg.name.toLowerCase() %>.ts'
+                src: ['build/<%= pkg.name %>.ts', 'src/references.d.ts'],
+                dest: 'build/<%= pkg.name %>.ts'
             },
             temp: {
                 src: ['src/candi.*.ts'],
-                dest: 'lib/temp.ts'
+                dest: 'build/temp.ts'
             },
             merge: {
-                src: ['lib/<%= pkg.name.toLowerCase() %>.ts', 'lib/temp.ts'],
-                dest: 'lib/<%= pkg.name.toLowerCase() %>.ts'
+                src: ['build/<%= pkg.name %>.ts', 'build/temp.ts'],
+                dest: 'build/<%= pkg.name %>.ts'
+            },
+            publish: {
+                src: ['build/<%= pkg.name %>.js'],
+                dest: 'lib/<%= pkg.name %>.js'
             }
         },
         "clean": {
             temp: {
-                src: ['lib/temp.ts']
+                src: ['build/temp.ts']
             }
         },
         "replace": {
             version: {
-                src: ['src/<%= pkg.name.toLowerCase() %>.ts'],
-                dest: 'lib/',
+                src: ['src/<%= pkg.name %>.ts'],
+                dest: 'build/',
                 replacements: [{
                     from: '%VERSION%',
                     to: '<%= pkg.version %>'
                 }]
             },
             references: {
-                src: ['lib/temp.ts'],
+                src: ['build/temp.ts'],
                 overwrite: true,
                 replacements: [{
                     from: /\/\/\/\<reference path=\'\.\.\/references\/.*\n/,
@@ -46,15 +50,24 @@ module.exports = function (grunt) {
         },
         "typescript": {
             base: {
-                src: ['lib/<%= pkg.name.toLowerCase() %>.ts'],
+                src: ['build/<%= pkg.name %>.ts'],
                 dest: '',
                 options: {
                     module: 'commonjs',
                     target: 'es5',
                     sourcemap: true,
                     fullSourceMapPath: false,
-                    declaration: true
+                    declaration: true,
+                    comments: true
                 }
+            }
+        },
+        "jshint": {
+            lib: ['lib/**/*.js'],
+            options: {
+                '-W027': true,
+                '-W086': true,
+                '-W069': true
             }
         }
     });
@@ -63,5 +76,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-typescript');
-    grunt.registerTask('default', ['replace:version', 'concat:references', 'concat:temp', 'replace:references', 'concat:merge', 'clean:temp', 'typescript']);
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.registerTask('default', ['replace:version', 'concat:references', 'concat:temp', 'replace:references', 'concat:merge', 'clean:temp', 'typescript', 'concat:publish', 'jshint:lib']);
 };

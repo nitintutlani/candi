@@ -42,6 +42,13 @@ describe('Container', function() {
             }).should.throw('dependency cannot be resolved in the Container');
         });
 
+        it('get', function(){
+            (function(){
+                container.value('nick', 'nitin');
+                var nitin = container2.Student;
+            }).should.not.throw();
+        });
+
     });
 
 });

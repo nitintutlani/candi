@@ -230,7 +230,7 @@ export class Container {
     private _resolveInjections = function(injections: string): any[] {
         if(!Util.isString(injections)) return [];
         var injectionNames: string[] = injections.replace(' ', '').split(',');
-        if(injectionNames.length==0) return [];
+        if(injectionNames.length===0) return [];
         var result: any[] = [];
         for (var i = 0; i < injectionNames.length; i++) {
             if( !Util.isUndefined(this[injectionNames[i]]) ) {
@@ -253,7 +253,7 @@ export class Container {
         var result: any;
         result = fn.apply(fn, injections);
         if( result === undefined ) {
-            if( injections.length==0 || injections[0]!==null ) {
+            if( injections.length===0 || injections[0]!==null ) {
                 //insert null as first item to the array of arguments
                 injections.unshift(null);
             }

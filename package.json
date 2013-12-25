@@ -21,8 +21,9 @@
         "grunt-contrib-concat": "*",
         "grunt-contrib-copy": "*",
         "grunt-typescript": "*",
-        "grunt-sed": "*",
-        "grunt-mocha-test": "*"
+        "grunt-text-replace": "*",
+        "grunt-contrib-jshint": "*",
+        "grunt-conventional-changelog": "*"
     },
     "scripts": {
         "test": "node_modules/.bin/mocha"
