@@ -9,16 +9,12 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         "concat": {
             references: {
-                src: ['build/<%= pkg.name %>.ts', 'src/references.d.ts'],
+                src: ['src/references.d.ts', 'build/<%= pkg.name %>.ts'],
                 dest: 'build/<%= pkg.name %>.ts'
             },
             temp: {
                 src: ['src/candi.*.ts'],
                 dest: 'build/temp.ts'
-            },
-            merge: {
-                src: ['build/<%= pkg.name %>.ts', 'build/temp.ts'],
-                dest: 'build/<%= pkg.name %>.ts'
             },
             publish: {
                 src: ['build/<%= pkg.name %>.js'],
@@ -28,6 +24,12 @@ module.exports = function (grunt) {
         "clean": {
             temp: {
                 src: ['build/temp.ts']
+            },
+            build: {
+                src: ['build/<%= pkg.name %>.*']
+            },
+            lib: {
+                src: ['lib/<%= pkg.name %>.js']
             }
         },
         "replace": {
@@ -43,7 +45,25 @@ module.exports = function (grunt) {
                 src: ['build/temp.ts'],
                 overwrite: true,
                 replacements: [{
-                    from: /\/\/\/\<reference path=\'\.\.\/references\/.*\n/,
+                    from: /\/\/\/<reference.*\n/g,
+                    to: ''
+                }]
+            },
+            merge: {
+                src: ['build/<%= pkg.name %>.ts'],
+                overwrite: true,
+                replacements: [{
+                    from: /\/\/\/code.*\n/,
+                    to: function (matchedWord, index, fullText, regexMatches) {
+                        return grunt.file.read('build/temp.ts');
+                    }
+                }]
+            },
+            cleanReferences: {
+                src: ['build/<%= pkg.name %>.js'],
+                overwrite: true,
+                replacements: [{
+                    from: /\/\/\/<reference.*\n/g,
                     to: ''
                 }]
             }
@@ -77,5 +97,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-typescript');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.registerTask('default', ['replace:version', 'concat:references', 'concat:temp', 'replace:references', 'concat:merge', 'clean:temp', 'typescript', 'concat:publish', 'jshint:lib']);
+    grunt.loadNpmTasks('grunt-release');
+    grunt.registerTask('default', ['clean:build', 'clean:lib', 'replace:version', 'concat:references', 'concat:temp', 'replace:references', 'replace:merge', 'clean:temp', 'typescript', 'replace:cleanReferences', 'concat:publish', 'jshint:lib']);
 };

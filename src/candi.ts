@@ -17,3 +17,10 @@
  * @version %VERSION%
  */
 
+module candi {
+
+///code
+
+}
+
+export = candi;

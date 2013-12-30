@@ -1,3 +1,5 @@
+///<reference path='./candi.Util.ts' />
+
 export module CandiError {
     /**
      * Template class for Error
@@ -14,22 +16,11 @@ export module CandiError {
             this.message = '[' + (lib ? lib + ':' + code : code) + '] ' + template.replace(/\{\d+\}/g, function (match) {
                 var index = +match.slice(1, -1), arg;
                 if (index < options.length) {
-                    arg = Template.stringify(options[index]);
+                    arg = Util.stringify(options[index]);
                     return arg;
                 }
                 return match;
             });
-        }
-
-        public static stringify = function(obj) {
-            if (typeof obj === 'function') {
-                return obj.toString().replace(/ \{[\s\S]*$/, '');
-            } else if (typeof obj === 'undefined') {
-                return 'undefined';
-            } else if (typeof obj !== 'string') {
-                return JSON.stringify(obj);
-            }
-            return obj;
         }
 
     }

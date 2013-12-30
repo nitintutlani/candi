@@ -1,3 +1,6 @@
+///<reference path='../references/node.d.ts' />
+///<reference path='../references/lodash.d.ts' />
+
 /**
  * Copyright (c) Nitin Tutlani <nitintutlani@yahoo.com>
  */
@@ -17,9 +20,8 @@
  * @version 0.2.0
  */
 
+module candi {
 
-///<reference path='../references/node.d.ts' />
-///<reference path='../references/lodash.d.ts' />
 
 export module CandiError {
     /**
@@ -37,22 +39,11 @@ export module CandiError {
             this.message = '[' + (lib ? lib + ':' + code : code) + '] ' + template.replace(/\{\d+\}/g, function (match) {
                 var index = +match.slice(1, -1), arg;
                 if (index < options.length) {
-                    arg = Template.stringify(options[index]);
+                    arg = Util.stringify(options[index]);
                     return arg;
                 }
                 return match;
             });
-        }
-
-        public static stringify = function(obj) {
-            if (typeof obj === 'function') {
-                return obj.toString().replace(/ \{[\s\S]*$/, '');
-            } else if (typeof obj === 'undefined') {
-                return 'undefined';
-            } else if (typeof obj !== 'string') {
-                return JSON.stringify(obj);
-            }
-            return obj;
         }
 
     }
@@ -72,6 +63,7 @@ export module CandiError {
         };
     }
 }
+
 
 /**
  * Container class
@@ -113,7 +105,7 @@ export class Container {
      * @param name
      * @returns {boolean}
      */
-    public hasInjection = function(name: string) : boolean {
+    public hasInjection(name: string) : boolean {
         return (this._injections[name] !== undefined) ? true : false;
     }
 
@@ -124,13 +116,13 @@ export class Container {
      * @param name
      * @returns this
      */
-    public deleteInjection = function(name: string): Container {
+    public deleteInjection(name: string): Container {
         delete this._injections[name];
         return this;
     }
 
     //Invoke injection method
-    private _invokeInjection = function(name: string): any {
+    private _invokeInjection(name: string): any {
         if(this.hasInjection(name)) {
             var injection: Injection;
             injection = this._injections[name];
@@ -158,7 +150,7 @@ export class Container {
     }
 
     //Common injection method
-    private _inject = function(type: string, name: string, value: any): Container {
+    private _inject(type: string, name: string, value: any): Container {
 
         Object.defineProperty(this, name, {
             get : function(){
@@ -212,7 +204,7 @@ export class Container {
      * @returns this
      *
      */
-    public value = function(name: string, value: any): Container {
+    public value(name: string, value: any): Container {
         return this._inject('value', name, value);
     }
 
@@ -225,7 +217,7 @@ export class Container {
      * @returns this
      *
      */
-    public constant = function(name: string, value: any): Container {
+    public constant(name: string, value: any): Container {
         return this._inject('constant', name, value);
     }
 
@@ -238,7 +230,7 @@ export class Container {
      * @returns this
      *
      */
-    public provider = function(name: string, value: any): Container {
+    public provider(name: string, value: any): Container {
         return this._inject('provider', name, value);
     }
 
@@ -253,7 +245,7 @@ export class Container {
      * @returns this
      *
      */
-    public factory = function(name: string, value: any): Container {
+    public factory(name: string, value: any): Container {
         return this._inject('factory', name, value);
     }
 
@@ -268,7 +260,7 @@ export class Container {
      * @returns this
      *
      */
-    public service = function(name: string, value: any): Container {
+    public service(name: string, value: any): Container {
         return this._inject('service', name, value);
     }
 
@@ -284,7 +276,7 @@ export class Container {
      * @returns this
      *
      */
-    public link = function(name: string, value: any): Container {
+    public link(name: string, value: any): Container {
         return this._inject('link', name, value);
     }
 
@@ -296,13 +288,13 @@ export class Container {
      * @param name
      * @returns this
      */
-    public resetService = function(name: string): Container {
+    public resetService(name: string): Container {
         delete this._injections[name].cache;
         return this;
     }
 
     //Accepts a string of function arguments, resolves them and returns them as an Array
-    private _resolveInjections = function(injections: string): any[] {
+    private _resolveInjections(injections: string): any[] {
         if(!Util.isString(injections)) return [];
         var injectionNames: string[] = injections.replace(' ', '').split(',');
         if(injectionNames.length===0) return [];
@@ -323,7 +315,7 @@ export class Container {
     //By convention all factory functions should return a new object from within their code
     // and all service function should create object when called first time and return same object on subsequent calls
     //If in either case fn.apply does not return a valid object a new bind.apply call is executed
-    private __construct = function(fn, injections): any {
+    private __construct(fn, injections): any {
         injections = injections || [];
         var result: any;
         result = fn.apply(fn, injections);
@@ -371,9 +363,11 @@ export class Injection {
 
 }
 
+
 declare module _ {
     interface LoDashStatic {
         annotateFn(fn: any): any;
+        stringify(obj: any): string;
     }
 }
 
@@ -417,3 +411,25 @@ Util.annotateFn = function(fn) {
     }
     return result;
 }
+
+/**
+ * Stringify converts obj/fn/value into a readable string.
+ * Log, Debug, Error messages may use stringify to return meaningful messages to the user.
+ *
+ * @param obj can be anything
+ * @returns string
+ */
+Util.stringify = function(obj: any): string {
+    if (typeof obj === 'function') {
+        return obj.toString().replace(/ \{[\s\S]*$/, '');
+    } else if (typeof obj === 'undefined') {
+        return 'undefined';
+    } else if (typeof obj !== 'string') {
+        return JSON.stringify(obj);
+    }
+    return obj.toString();
+}
+
+}
+
+export = candi;

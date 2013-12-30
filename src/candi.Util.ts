@@ -1,6 +1,9 @@
+///<reference path='./references.d.ts' />
+
 declare module _ {
     interface LoDashStatic {
         annotateFn(fn: any): any;
+        stringify(obj: any): string;
     }
 }
 
@@ -43,4 +46,22 @@ Util.annotateFn = function(fn) {
         result = fn;
     }
     return result;
+}
+
+/**
+ * Stringify converts obj/fn/value into a readable string.
+ * Log, Debug, Error messages may use stringify to return meaningful messages to the user.
+ *
+ * @param obj can be anything
+ * @returns string
+ */
+Util.stringify = function(obj: any): string {
+    if (typeof obj === 'function') {
+        return obj.toString().replace(/ \{[\s\S]*$/, '');
+    } else if (typeof obj === 'undefined') {
+        return 'undefined';
+    } else if (typeof obj !== 'string') {
+        return JSON.stringify(obj);
+    }
+    return obj.toString();
 }
