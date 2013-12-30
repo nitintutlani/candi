@@ -1,7 +1,7 @@
 {
   "author": "Nitin Tutlani <nitintutlani@yahoo.com>",
   "name": "candi",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Dependency injection and utility library for node.js",
   "repository": {
     "type": "git",
