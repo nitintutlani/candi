@@ -4,10 +4,11 @@ declare module _ {
     interface LoDashStatic {
         annotateFn(fn: any): any;
         stringify(obj: any): string;
+        extends2(thisConstructor: any, superConstructor: any): string;
     }
 }
 
-export var Util = require('lodash');
+export var Util: any = require('lodash');
 
 /**
  * Annotates a function with static parameter `injections`
@@ -64,4 +65,35 @@ Util.stringify = function(obj: any): string {
         return JSON.stringify(obj);
     }
     return obj.toString();
+}
+
+/**
+ * This function can be used to support multiple inheritance
+ * Extends Class enumerations and mixes Prototype functions
+ * It also preserves prototype function on original object unlike typescript __extends
+ * This can be used instead of typescript __extends, util.inherits
+ * eg:
+ *      class Bundle extends Component implements EventEmitter
+ *      Util.extends2(Bundle, EventEmitter2)
+ *
+ * @param thisConstructor
+ * @param superConstructor
+ * @returns {boolean}
+ */
+Util.extends2 = function (thisConstructor: any, superConstructor: any) {
+    if(typeof thisConstructor !=='function' || typeof superConstructor !== 'function') {
+        return false;
+    }
+
+    //Typescript way
+    /* for (var property in superConstructor) if (superConstructor.hasOwnProperty(property)) thisConstructor[property] = superConstructor[property];
+    function __() { this.constructor = thisConstructor; }
+    __.prototype = superConstructor.prototype;
+    thisConstructor.prototype = new __(); */
+
+    //Lodash way
+    Util.assign(thisConstructor, superConstructor);
+    Util.mixin(thisConstructor.prototype, superConstructor.prototype);
+
+    return true;
 }

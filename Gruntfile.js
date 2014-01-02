@@ -19,6 +19,10 @@ module.exports = function (grunt) {
             publish: {
                 src: ['build/<%= pkg.name %>.js'],
                 dest: 'lib/<%= pkg.name %>.js'
+            },
+            publishReference: {
+                src: ['build/<%= pkg.name %>.d.ts'],
+                dest: 'references/<%= pkg.name %>.d.ts'
             }
         },
         "clean": {
@@ -98,5 +102,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-typescript');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-release');
-    grunt.registerTask('default', ['clean:build', 'clean:lib', 'replace:version', 'concat:references', 'concat:temp', 'replace:references', 'replace:merge', 'clean:temp', 'typescript', 'replace:cleanReferences', 'concat:publish', 'jshint:lib']);
+    grunt.registerTask('default', ['clean:build', 'clean:lib', 'replace:version', 'concat:references', 'concat:temp', 'replace:references', 'replace:merge', 'clean:temp', 'typescript', 'replace:cleanReferences', 'concat:publish', 'concat:publishReference', 'jshint:lib']);
 };
