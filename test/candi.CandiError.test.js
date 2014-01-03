@@ -8,7 +8,7 @@ var candi = require('../lib/candi');
 var CandiError = candi.CandiError;
 var myError = candi.CandiError.Custom('my_package_name');
 
-describe("candi.CandiError", function () {
+describe('CandiError', function () {
     it('Template', function () {
         try  {
             throw new CandiError.Template('my_package_name', 'my_code_area_name', 'myError', 'This error message supports tags like {0}, {1}', [100, 'foo']);

@@ -1,5 +1,4 @@
 /// <reference path="../references/node.d.ts" />
-/// <reference path="../references/lodash.d.ts" />
 /**
 * Copyright (c) Nitin Tutlani <nitintutlani@yahoo.com>
 */
@@ -188,6 +187,36 @@ declare module candi {
         public cache: any;
         constructor(type: string, name: string, value: any);
     }
-    var Util: any;
+    class Util {
+        static isArray(obj: any): boolean;
+        static isString(obj: any): boolean;
+        static isFunction(obj: any): boolean;
+        static isUndefined(obj: any): boolean;
+        /**
+        * Check if value is an Invokable function in context of Candi
+        * value === function || value is [fn, injections]
+        *
+        * @param obj
+        * @returns {boolean}
+        */
+        static isInvokable(obj: any): boolean;
+        /**
+        * Annotates a function with static parameter `injections`
+        * injections is a string of comma separated function arguments to protect it from minification
+        * annotated function can be used as DI provider and called later by way of Automatic injections
+        *
+        * @param fn function to annotate, function can also be an Invokable function array [fn: function, injections: string]
+        * @returns Annotated function reference is returned
+        */
+        static annotateFn(fn: any): any;
+        /**
+        * Stringify converts obj/fn/value into a readable string.
+        * Log, Debug, Error messages may use stringify to return meaningful messages to the user.
+        *
+        * @param obj can be anything
+        * @returns string
+        */
+        static stringify(obj: any): string;
+    }
 }
 export = candi;
